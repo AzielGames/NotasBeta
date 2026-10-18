@@ -1,14 +1,33 @@
+
 {
-  "background_color": "#000000",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "NotasBeta",
-  "orientation": "any",
-  "scope": "/",
+  "id": "./",
+  "name": "NotasBeta - Mis Notas y Libros",
   "short_name": "NotasBeta",
-  "start_url": "/",
-  "theme_color": "#000000",
-  "id": "NotasBetaPWA",
-  "description": "Bloc de notas",
-  "lang": "es"
+  "description": "Organiza tus notas personales y libros en un solo lugar.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f1f5f9",
+  "theme_color": "#38bdf8",
+  "categories": [
+    "productivity",
+    "education",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
