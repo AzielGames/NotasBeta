@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Bloc de Notas Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Cabecera -->
+    <header class="app-header">
+      <div class="header-center">
+        <h1>Mis Notas & Libros</h1>
+        <p class="subtitle">Organización personal</p>
+      </div>
+    </header>
+
+    <!-- Barra Superior de Creación y Permiso de Almacenamiento -->
+    <div class="top-action-bar">
+      <button class="btn-intersect" onclick="abrirModalNuevoLibro()">+ Libro</button>
+      <button class="btn-intersect" onclick="abrirModalNuevaNota()">+ Nota</button>
+      <button class="btn-intersect btn-folder" onclick="solicitarPermisoCarpeta()" title="Guardar directamente en tu almacenamiento">📂 Conectar Carpeta</button>
+    </div>
+
+    <!-- Cuerpo Dinámico -->
+    <main class="main-content">
+      
+      <!-- SECCIÓN LIBROS -->
+      <section class="collapsible-section" id="sectionBooks">
+        <div class="section-header" onclick="toggleSection('books')">
+          <div class="section-title-group">
+            <h2>📚 Libros</h2>
+            <span id="booksCount" class="badge">0</span>
+          </div>
+          <button class="toggle-btn" id="btnToggleBooks">▲</button>
+        </div>
+        <div class="section-body" id="booksBody">
+          <div id="booksGrid" class="cards-grid"></div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN NOTAS -->
+      <section class="collapsible-section" id="sectionNotes">
+        <div class="section-header" onclick="toggleSection('notes')">
+          <div class="section-title-group">
+            <h2>📄 Notas Rápidas</h2>
+            <span id="notesCount" class="badge">0</span>
+          </div>
+          <button class="toggle-btn" id="btnToggleNotes">▲</button>
+        </div>
+        <div class="section-body" id="notesBody">
+          <div id="notesGrid" class="cards-grid"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal para Nota Simple -->
+    <div class="modal" id="noteModal">
+      <div class="modal-content wide-modal">
+        <div class="modal-header">
+          <h2 id="modalNoteTitle">Nueva Nota</h2>
+          <button class="close-modal-btn" onclick="cerrarModales()">✕</button>
+        </div>
+        <input type="text" id="noteTitle" placeholder="Título de la nota...">
+        
+        <!-- Caja 1: Texto -->
+        <div class="word-toolbar">
+          <button onclick="formatText('bold')" title="Negrita"><b>N</b></button>
+          <button onclick="formatText('italic')" title="Cursiva"><i>C</i></button>
+          <button onclick="formatText('underline')" title="Subrayado"><u>S</u></button>
+          
+          <select onchange="changeFontSize(this.value)" class="toolbar-select">
+            <option value="2">Pequeña</option>
+            <option value="3" selected>Normal</option>
+            <option value="4">Mediana</option>
+            <option value="5">Grande</option>
+            <option value="6">Muy Grande</option>
+            <option value="7">Título</option>
+          </select>
+
+          <input type="color" id="textColorPicker" onchange="formatTextColor(this.value)" title="Color">
+          <button onclick="formatText('justifyLeft')">⬅️</button>
+          <button onclick="formatText('justifyCenter')">↔️</button>
+          <button onclick="formatText('justifyRight')">➡️</button>
+        </div>
+
+        <!-- Caja 2: Imagen -->
+        <div class="word-toolbar image-toolbar-section">
+          <label class="toolbar-img-btn">
+            📷 Insertar Imagen <input type="file" accept="image/*" onchange="insertarImagenEnEditor('noteContentEditor', event)" hidden>
+          </label>
+          <div id="imageControlBar_noteContentEditor" class="image-control-bar" style="display:none;">
+            <span>Tamaño (%):</span>
+            <input type="range" min="20" max="150" value="50" oninput="resizeImageBySlider(this.value)" class="img-slider">
+            <button onclick="setImageFloat('left')">⬅️ Flotar Izq</button>
+            <button onclick="setImageFloat('none')">📄 Bloque</button>
+            <button onclick="setImageFloat('right')">➡️ Flotar Der</button>
+          </div>
+        </div>
+
+        <div id="noteContentEditor" class="rich-editor" contenteditable="true" spellcheck="true" placeholder="Escribe tu nota aquí..."></div>
+
+        <div class="modal-buttons">
+          <button class="btn-primary" onclick="guardarNota()">Guardar</button>
+          <button class="btn-secondary" onclick="cerrarModales()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Nuevo Libro -->
+    <div class="modal" id="bookModal">
+      <div class="modal-content wide-modal">
+        <div class="modal-header">
+          <h2>Nuevo Libro</h2>
+          <button class="close-modal-btn" onclick="cerrarModales()">✕</button>
+        </div>
+        
+        <!-- Fila superior: Portada y Título estilizable -->
+        <div class="book-header-row">
+          <div class="cover-section-inline">
+            <input type="file" accept="image/*" id="bookCoverInput" onchange="cargarPortadaLibro(event)" hidden>
+            <div id="bookCoverPreview" class="square-cover-box-inline" onclick="document.getElementById('bookCoverInput').click()">
+              <span class="cover-placeholder">🖼️ Tocar portada</span>
+            </div>
+          </div>
+          <div class="title-custom-group">
+            <input type="text" id="bookTitle" placeholder="Título del libro..." oninput="actualizarEstiloTituloPreview()">
+            <div class="title-toolbar">
+              <select id="bookTitleSize" onchange="actualizarEstiloTituloPreview()" class="toolbar-select">
+                <option value="1rem">Normal</option>
+                <option value="1.2rem">Mediano</option>
+                <option value="1.4rem" selected>Grande</option>
+                <option value="1.7rem">Título</option>
+              </select>
+              <input type="color" id="bookTitleColor" value="#38bdf8" onchange="actualizarEstiloTituloPreview()" title="Color del título">
+            </div>
+          </div>
+        </div>
+
+        <!-- Caja 1: Texto -->
+        <div class="word-toolbar">
+          <button onclick="formatText('bold')"><b>N</b></button>
+          <button onclick="formatText('italic')"><i>C</i></button>
+          <button onclick="formatText('underline')"><u>S</u></button>
+          <select onchange="changeFontSize(this.value)" class="toolbar-select">
+            <option value="2">Pequeña</option>
+            <option value="3" selected>Normal</option>
+            <option value="4">Mediana</option>
+            <option value="5">Grande</option>
+            <option value="6">Muy Grande</option>
+            <option value="7">Título</option>
+          </select>
+          <input type="color" onchange="formatTextColor(this.value)">
+          <button onclick="formatText('justifyLeft')">⬅️</button>
+          <button onclick="formatText('justifyCenter')">↔️</button>
+          <button onclick="formatText('justifyRight')">➡️</button>
+        </div>
+
+        <!-- Caja 2: Imagen -->
+        <div class="word-toolbar image-toolbar-section">
+          <label class="toolbar-img-btn">
+            📷 Insertar Imagen <input type="file" accept="image/*" onchange="insertarImagenEnEditor('firstPageEditor', event)" hidden>
+          </label>
+          <div id="imageControlBar_firstPageEditor" class="image-control-bar" style="display:none;">
+            <span>Tamaño (%):</span>
+            <input type="range" min="20" max="150" value="50" oninput="resizeImageBySlider(this.value)" class="img-slider">
+            <button onclick="setImageFloat('left')">⬅️ Flotar Izq</button>
+            <button onclick="setImageFloat('none')">📄 Bloque</button>
+            <button onclick="setImageFloat('right')">➡️ Flotar Der</button>
+          </div>
+        </div>
+
+        <div id="firstPageEditor" class="rich-editor" contenteditable="true" spellcheck="true" placeholder="Contenido de la primera página..."></div>
+
+        <div class="modal-buttons">
+          <button class="btn-primary" onclick="guardarLibro()">Crear Libro</button>
+          <button class="btn-secondary" onclick="cerrarModales()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Visor de Libro -->
+    <div class="modal" id="viewBookModal">
+      <div class="modal-content wide-modal book-viewer-content">
+        <div class="modal-header">
+          <span style="font-size: 0.8rem; color: var(--accent-blue);">Lector de Libro</span>
+          <button class="close-modal-btn" onclick="cerrarModales()">✕</button>
+        </div>
+        
+        <!-- Fila superior visor (Portada y Título dinámico interactivo) -->
+        <div class="book-header-row">
+          <div id="viewerBookCoverContainer" class="square-cover-box-inline viewer-cover-inline"></div>
+          <div class="title-custom-group">
+            <input type="text" id="viewerBookTitleInput" oninput="actualizarTituloEnVivo()" placeholder="Título del libro...">
+            <div class="title-toolbar">
+              <select id="viewerTitleSize" onchange="actualizarTituloEnVivo()" class="toolbar-select">
+                <option value="1rem">Normal</option>
+                <option value="1.2rem">Mediano</option>
+                <option value="1.4rem" selected>Grande</option>
+                <option value="1.7rem">Título</option>
+              </select>
+              <input type="color" id="viewerTitleColor" value="#38bdf8" onchange="actualizarTituloEnVivo()">
+            </div>
+          </div>
+        </div>
+
+        <div class="page-navigation">
+          <button onclick="cambiarPagina(-1)">◀ Anterior</button>
+          <span id="pageIndicator">Página 1 de 1</span>
+          <button onclick="cambiarPagina(1)">Siguiente ▶</button>
+        </div>
+
+        <!-- Caja 1: Texto -->
+        <div class="word-toolbar">
+          <button onclick="formatText('bold')"><b>N</b></button>
+          <button onclick="formatText('italic')"><i>C</i></button>
+          <button onclick="formatText('underline')"><u>S</u></button>
+          <select onchange="changeFontSize(this.value)" class="toolbar-select">
+            <option value="2">Pequeña</option>
+            <option value="3" selected>Normal</option>
+            <option value="4">Mediana</option>
+            <option value="5">Grande</option>
+            <option value="6">Muy Grande</option>
+            <option value="7">Título</option>
+          </select>
+          <input type="color" onchange="formatTextColor(this.value)">
+          <button onclick="formatText('justifyLeft')">⬅️</button>
+          <button onclick="formatText('justifyCenter')">↔️</button>
+          <button onclick="formatText('justifyRight')">➡️</button>
+        </div>
+
+        <!-- Caja 2: Imagen -->
+        <div class="word-toolbar image-toolbar-section">
+          <label class="toolbar-img-btn">
+            📷 Insertar Imagen <input type="file" accept="image/*" onchange="insertarImagenEnEditor('currentPageEditor', event)" hidden>
+          </label>
+          <div id="imageControlBar_currentPageEditor" class="image-control-bar" style="display:none;">
+            <span>Tamaño (%):</span>
+            <input type="range" min="20" max="150" value="50" oninput="resizeImageBySlider(this.value)" class="img-slider">
+            <button onclick="setImageFloat('left')">⬅️ Flotar Izq</button>
+            <button onclick="setImageFloat('none')">📄 Bloque</button>
+            <button onclick="setImageFloat('right')">➡️ Flotar Der</button>
+          </div>
+        </div>
+
+        <div id="currentPageEditor" class="rich-editor" contenteditable="true" spellcheck="true" placeholder="Escribe en esta página..."></div>
+
+        <div class="modal-buttons">
+          <button class="btn-primary" onclick="guardarPaginaActual()">Guardar Página</button>
+          <button class="btn-secondary" onclick="agregarPaginaAlLibro()">+ Nueva Página</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
