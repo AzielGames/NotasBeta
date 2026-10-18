@@ -1,24 +1,14 @@
 {
-  "name": "NotasBeta",
-  "short_name": "NotasBeta",
-  "description": "Aplicación de notas y libros",
-  "start_url": "./index.html",
+  "background_color": "#000000",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#030712",
-  "theme_color": "#030712",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "name": "NotasBeta",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "NotasBeta",
+  "start_url": "/",
+  "theme_color": "#000000",
+  "id": "NotasBetaPWA",
+  "description": "Bloc de notas",
+  "lang": "es"
 }
