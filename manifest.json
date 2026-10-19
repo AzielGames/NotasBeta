@@ -4,12 +4,13 @@
   "short_name": "NotasBeta",
   "description": "Organiza tus notas personales y libros en un solo lugar.",
   "lang": "es",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#f1f5f9",
+  "orientation": "portrait",
+  "background_color": "#030712",
   "theme_color": "#38bdf8",
+  "dir": "ltr",
   "categories": [
     "productivity",
     "education",
@@ -17,16 +18,16 @@
   ],
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3209/3209265.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
